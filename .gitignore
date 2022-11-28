@@ -13,3 +13,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+/.idea/watcherTasks.xml
+/.idea/modules.xml
+/.idea/misc.xml
+/.idea/crossDevOps.iml
+/.idea/.gitignore
