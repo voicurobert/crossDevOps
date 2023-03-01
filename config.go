@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 )
 
@@ -67,7 +68,7 @@ func (c CROSSConfig) createDB() {
 	command = append(command, "createDatabase")
 	command = append(command, "--drop-if-exists")
 
-	err := c.executeCommand("java", command...)
+	err := c.executeCommand("java", command, "")
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +82,7 @@ func (c CROSSConfig) initialize() {
 	command := defaultDBToolCommand(c, true)
 	command = append(command, "initialize")
 
-	err := c.executeCommand("java", command...)
+	err := c.executeCommand("java", command, "")
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +107,7 @@ func (c CROSSConfig) importConfigCommands() {
 		commands = append(commands, cmd)
 
 		color.HiMagenta("Running command: " + strings.Join(commands, " "))
-		err := c.executeCommand("java", commands...)
+		err := c.executeCommand("java", commands, "")
 		if err != nil {
 			panic(err)
 		}
@@ -125,7 +126,7 @@ func (c CROSSConfig) createProject() {
 	command = append(command, "-n="+ProjectName)
 	command = append(command, "-t="+ProjectName)
 
-	err := c.executeCommand("java", command...)
+	err := c.executeCommand("java", command, "")
 	if err != nil {
 		panic(err)
 	}
@@ -152,7 +153,7 @@ func (c CROSSConfig) runProbes() {
 		commands = append(commands, "--user-name="+Username)
 
 		color.Magenta("\t create probe " + probeName + " command: " + strings.Join(commands, " "))
-		err := c.executeCommand("java", commands...)
+		err := c.executeCommand("java", commands, "")
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
@@ -164,7 +165,7 @@ func (c CROSSConfig) runProbes() {
 		runCommands = append(runCommands, "-n="+strings.ToUpper(probeName))
 
 		color.Magenta("\t run probe " + probeName + " command: " + strings.Join(runCommands, " "))
-		err = c.executeCommand("java", runCommands...)
+		err = c.executeCommand("java", runCommands, probeName)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -183,7 +184,7 @@ func (c CROSSConfig) getProbeJarPath(probeName string) string {
 	return ""
 }
 
-func (c CROSSConfig) executeCommand(command string, args ...string) error {
+func (c CROSSConfig) executeCommand(command string, args []string, filename string) error {
 	cmd := exec.Command(command, args...)
 
 	cmdReader, err := cmd.StdoutPipe()
@@ -196,6 +197,12 @@ func (c CROSSConfig) executeCommand(command string, args ...string) error {
 		scanner := bufio.NewScanner(cmdReader)
 		go func() {
 			for scanner.Scan() {
+				if filename != "" {
+					dir, _ := os.Getwd()
+					filepath := path.Join(dir, filename, ".txt")
+					f, _ := os.Create(filepath)
+					f.WriteString(scanner.Text())
+				}
 				color.Yellow("\t > %s\n", scanner.Text())
 			}
 		}()

@@ -14,6 +14,18 @@
     {
       "probeName" : "routes_probe",
       "jarPath": "/aquacomms_probes/routes_probe"
+    },
+    {
+      "probeName" : "ciena_probe",
+      "jarPath": "/aquacomms_probes/ciena_probe"
+    },
+    {
+      "probeName" : "odf_probe",
+      "jarPath": "/aquacomms_probes/odf_probe"
+    },
+    {
+      "probeName" : "services_probe",
+      "jarPath": "/aquacomms_probes/services_probe"
     }
   ],
 
@@ -26,6 +38,6 @@
       "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/AquaCommsConfig.xml"
     ],
     "createProject": true,
-    "probesToRun" : ["locality_probe", "routes_probe"]
+    "probesToRun" : ["locality_probe", "routes_probe", "ciena_probe", "odf_probe", "services_probe"]
   }
 }
