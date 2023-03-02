@@ -19,6 +19,7 @@ type Paths struct {
 	Repo               string `mapstructure:"repo"`
 	DBToolPath         string `mapstructure:"DBToolPath"`
 	PropertiesFilePath string `mapstructure:"propertiesFilePath"`
+	LogsPath           string `mapstructure:"logsPath"`
 }
 
 type Probe struct {
@@ -26,12 +27,18 @@ type Probe struct {
 	JarPath   string `mapstructure:"jarPath"`
 }
 
+type ImportData struct {
+	ProbeName string `mapstructure:"probeName"`
+	ProbeXML  string `mapstructure:"probeXML"`
+}
+
 type Actions struct {
-	CreateDB      bool     `mapstructure:"createDB"`
-	Initialize    bool     `mapstructure:"initialize"`
-	ImportConfigs []string `mapstructure:"importConfigs"`
-	CreateProject bool     `mapstructure:"createProject"`
-	ProbesToRun   []string `mapstructure:"probesToRun"`
+	CreateDB      bool         `mapstructure:"createDB"`
+	Initialize    bool         `mapstructure:"initialize"`
+	ImportConfigs []string     `mapstructure:"importConfigs"`
+	CreateProject bool         `mapstructure:"createProject"`
+	ImportData    []ImportData `mapstructure:"importData"`
+	ProbesToRun   []string     `mapstructure:"probesToRun"`
 }
 
 type CROSSConfig struct {
@@ -47,6 +54,7 @@ func (c CROSSConfig) RunActions() {
 	c.initialize()
 	c.importConfigCommands()
 	c.createProject()
+	c.importData()
 	c.runProbes()
 }
 
@@ -132,6 +140,31 @@ func (c CROSSConfig) createProject() {
 	}
 }
 
+func (c CROSSConfig) importData() {
+	importData := c.Actions.ImportData
+	if importData == nil {
+		return
+	}
+	if len(importData) == 0 {
+		return
+	}
+
+	for i := 0; i < len(importData); i++ {
+		commands := defaultDBToolCommand(c, true)
+		id := importData[i]
+		commands = append(commands, "importData")
+		commands = append(commands, "--project-name="+ProjectName)
+		commands = append(commands, "-n="+id.ProbeName)
+		commands = append(commands, "-f="+id.ProbeXML)
+
+		color.HiMagenta("Running command: " + strings.Join(commands, " "))
+		err := c.executeCommand("java", commands, "")
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func (c CROSSConfig) runProbes() {
 	probes := c.Actions.ProbesToRun
 
@@ -193,17 +226,26 @@ func (c CROSSConfig) executeCommand(command string, args []string, filename stri
 		return err
 	}
 
+	var f *os.File
+	var errFile error
+
+	if filename != "" {
+		filepath := path.Join(c.Paths.LogsPath, filename+".txt")
+		f, errFile = os.Create(filepath)
+		if errFile != nil {
+			fmt.Println(errFile)
+		}
+	}
+
 	if c.PrintExecution {
 		scanner := bufio.NewScanner(cmdReader)
 		go func() {
 			for scanner.Scan() {
-				if filename != "" {
-					dir, _ := os.Getwd()
-					filepath := path.Join(dir, filename, ".txt")
-					f, _ := os.Create(filepath)
-					f.WriteString(scanner.Text())
+				text := scanner.Text()
+				if f != nil {
+					f.WriteString(text + "\n")
 				}
-				color.Yellow("\t > %s\n", scanner.Text())
+				color.Yellow("\t > %s\n", text)
 			}
 		}()
 	}

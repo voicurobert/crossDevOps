@@ -3,7 +3,8 @@
   "paths" : {
     "repo": "/Users/robert/CROSS/v4_projects/aquacomms/repo",
     "DBToolPath" : "/Users/robert/CROSS/db_tool-4.5",
-    "propertiesFilePath" : "/aquacomms_configuration/src/main/resources/com/cross_ni/cross/configuration/override.properties"
+    "propertiesFilePath" : "/aquacomms_configuration/src/main/resources/com/cross_ni/cross/configuration/override.properties",
+    "logsPath": "/Users/robert/CROSS/v4_projects/aquacomms"
   },
 
   "probes": [
@@ -38,6 +39,10 @@
       "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/AquaCommsConfig.xml"
     ],
     "createProject": true,
+    "importData": [
+      {"probeName": "countries", "probeXML":  "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/CountriesDataUP.xml"},
+      {"probeName": "materials", "probeXML":  "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/MaterialsDataUP.xml"}
+    ],
     "probesToRun" : ["locality_probe", "routes_probe", "ciena_probe", "odf_probe", "services_probe"]
   }
 }
