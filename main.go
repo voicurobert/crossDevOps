@@ -3,10 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
+	"path/filepath"
 )
 
 func main() {
-	config, err := LoadConfig(".")
+	exePath, _ := os.Executable()
+	path := filepath.Dir(exePath)
+	config, err := LoadConfig(path)
 	if err != nil {
 		panic(err)
 	}
