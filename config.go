@@ -204,7 +204,6 @@ func (c CROSSConfig) runProbes() {
 		err := c.executeCommand("java", commands, "")
 		if err != nil {
 			fmt.Println(err.Error())
-			continue
 		}
 
 		runCommands := defaultDBToolCommand(c, true)
