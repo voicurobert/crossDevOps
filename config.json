@@ -7,42 +7,62 @@
     "logsPath": "/Users/robert/CROSS/v4_projects/aquacomms"
   },
 
-  "probes": [
-    {
-      "probeName" : "locality_probe",
-      "jarPath": "/aquacomms_probes/locality_probe"
-    },
-    {
-      "probeName" : "routes_probe",
-      "jarPath": "/aquacomms_probes/routes_probe"
-    },
-    {
-      "probeName" : "ciena_probe",
-      "jarPath": "/aquacomms_probes/ciena_probe"
-    },
-    {
-      "probeName" : "odf_probe",
-      "jarPath": "/aquacomms_probes/odf_probe"
-    },
-    {
-      "probeName" : "services_probe",
-      "jarPath": "/aquacomms_probes/services_probe"
-    }
-  ],
-
   "actions": {
     "createDB": true,
     "initialize" : true,
     "importConfigs": [
-      "--import-core-conf",
-      "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/Units.xml",
-      "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/AquaCommsConfig.xml"
+      {
+        "run": true,
+        "path": "--import-core-conf"
+      },
+      {
+        "run": true,
+        "path": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/Units.xml"
+      },
+      {
+        "run": true,
+        "path":"/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/AquaCommsConfig.xml"
+      }
     ],
     "createProject": true,
     "importData": [
-      {"probeName": "countries", "probeXML":  "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/CountriesDataUP.xml"},
-      {"probeName": "materials", "probeXML":  "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/MaterialsDataUP.xml"}
+      {
+        "run": true,
+        "probeName": "countries",
+        "probeXML": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/CountriesDataUP.xml"
+      },
+      {
+        "run": true,
+        "probeName": "materials",
+        "probeXML": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/MaterialsDataUP.xml"
+      }
     ],
-    "probesToRun" : ["locality_probe", "routes_probe", "ciena_probe", "odf_probe", "services_probe"]
+    "probes": [
+      {
+        "run": true,
+        "probeName" : "locality_probe",
+        "jarPath": "/aquacomms_probes/locality_probe"
+      },
+      {
+        "run": true,
+        "probeName" : "routes_probe",
+        "jarPath": "/aquacomms_probes/routes_probe"
+      },
+      {
+        "run": true,
+        "probeName" : "ciena_probe",
+        "jarPath": "/aquacomms_probes/ciena_probe"
+      },
+      {
+        "run": true,
+        "probeName" : "odf_probe",
+        "jarPath": "/aquacomms_probes/odf_probe"
+      },
+      {
+        "run": true,
+        "probeName" : "services_probe",
+        "jarPath": "/aquacomms_probes/services_probe"
+      }
+    ]
   }
 }

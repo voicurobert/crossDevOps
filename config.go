@@ -23,28 +23,34 @@ type Paths struct {
 }
 
 type Probe struct {
+	Run       bool   `mapstructure:"run"`
 	ProbeName string `mapstructure:"probeName"`
 	JarPath   string `mapstructure:"jarPath"`
 }
 
 type ImportData struct {
+	Run       bool   `mapstructure:"run"`
 	ProbeName string `mapstructure:"probeName"`
 	ProbeXML  string `mapstructure:"probeXML"`
 }
 
+type ImportConfig struct {
+	Run  bool   `mapstructure:"run"`
+	Path string `mapstructure:"path"`
+}
+
 type Actions struct {
-	CreateDB      bool         `mapstructure:"createDB"`
-	Initialize    bool         `mapstructure:"initialize"`
-	ImportConfigs []string     `mapstructure:"importConfigs"`
-	CreateProject bool         `mapstructure:"createProject"`
-	ImportData    []ImportData `mapstructure:"importData"`
-	ProbesToRun   []string     `mapstructure:"probesToRun"`
+	CreateDB      bool           `mapstructure:"createDB"`
+	Initialize    bool           `mapstructure:"initialize"`
+	ImportConfigs []ImportConfig `mapstructure:"importConfigs"`
+	CreateProject bool           `mapstructure:"createProject"`
+	ImportData    []ImportData   `mapstructure:"importData"`
+	Probes        []Probe        `mapstructure:"probes"`
 }
 
 type CROSSConfig struct {
 	PrintExecution bool    `mapstructure:"printExecution"`
 	Paths          Paths   `mapstructure:"paths"`
-	Probes         []Probe `mapstructure:"probes"`
 	Actions        Actions `mapstructure:"actions"`
 }
 
@@ -108,11 +114,14 @@ func (c CROSSConfig) importConfigCommands() {
 	for i := 0; i < len(importConfigs); i++ {
 		commands := defaultDBToolCommand(c, true)
 		cmd := importConfigs[i]
+		if !cmd.Run {
+			continue
+		}
 		commands = append(commands, "importConfig")
-		if strings.Split(cmd, "")[0] != "-" {
+		if strings.Split(cmd.Path, "")[0] != "-" {
 			commands = append(commands, "-f")
 		}
-		commands = append(commands, cmd)
+		commands = append(commands, cmd.Path)
 
 		color.HiMagenta("Running command: " + strings.Join(commands, " "))
 		err := c.executeCommand("java", commands, "")
@@ -152,6 +161,9 @@ func (c CROSSConfig) importData() {
 	for i := 0; i < len(importData); i++ {
 		commands := defaultDBToolCommand(c, true)
 		id := importData[i]
+		if !id.Run {
+			continue
+		}
 		commands = append(commands, "importData")
 		commands = append(commands, "--project-name="+ProjectName)
 		commands = append(commands, "-n="+id.ProbeName)
@@ -166,7 +178,7 @@ func (c CROSSConfig) importData() {
 }
 
 func (c CROSSConfig) runProbes() {
-	probes := c.Actions.ProbesToRun
+	probes := c.Actions.Probes
 
 	if len(probes) == 0 {
 		return
@@ -175,11 +187,14 @@ func (c CROSSConfig) runProbes() {
 	color.HiMagenta("Running probes command")
 
 	for i := 0; i < len(probes); i++ {
+		if !probes[i].Run {
+			continue
+		}
 		commands := defaultDBToolCommand(c, true)
-		probeName := probes[i]
+		probeName := probes[i].ProbeName
 		commands = append(commands, "probe")
 		commands = append(commands, "create")
-		jarPath := c.getProbeJarPath(probeName)
+		jarPath := c.getProbeJarPath(probeName, probes[i].JarPath)
 		commands = append(commands, "-jar="+jarPath)
 		commands = append(commands, "-n="+strings.ToUpper(probeName))
 		commands = append(commands, "--project-name="+ProjectName)
@@ -206,15 +221,9 @@ func (c CROSSConfig) runProbes() {
 
 }
 
-func (c CROSSConfig) getProbeJarPath(probeName string) string {
+func (c CROSSConfig) getProbeJarPath(probeName, path string) string {
 	repo := c.Paths.Repo
-	for _, probe := range c.Probes {
-		if probe.ProbeName != probeName {
-			continue
-		}
-		return repo + probe.JarPath + "/target/" + probeName + ".jar"
-	}
-	return ""
+	return repo + path + "/target/" + probeName + ".jar"
 }
 
 func (c CROSSConfig) executeCommand(command string, args []string, filename string) error {

@@ -12,6 +12,7 @@ func main() {
 	path := filepath.Dir(exePath)
 	config, err := LoadConfig(path)
 	if err != nil {
+		fmt.Println("error loading config: ", err)
 		panic(err)
 	}
 
