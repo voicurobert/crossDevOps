@@ -1,10 +1,12 @@
 {
   "printExecution": true,
   "paths" : {
-    "repo": "/Users/robert/CROSS/v4_projects/aquacomms/repo",
-    "DBToolPath" : "/Users/robert/CROSS/db_tool-4.5",
-    "propertiesFilePath" : "/aquacomms_configuration/src/main/resources/com/cross_ni/cross/configuration/override.properties",
-    "logsPath": "/Users/robert/CROSS/v4_projects/aquacomms"
+    "repo": "/Users/robert/cross/v4_projects/orange/repo",
+    "DBToolPath" : "/Users/robert/cross/db_tool-4.11.0",
+    "propertiesFilePath" : "/oro_configuration/src/main/resources/com/cross_ni/cross/configuration/override.properties",
+    "logsPath": "/Users/robert/cross/v4_projects/orange/",
+    "configsPath" : "/Users/robert/cross/v4_projects/orange/repo/oro_configuration/src/main/resources/com/cross_ni/cross/configuration/",
+    "dataPath": "/Users/robert/cross/v4_projects/orange/repo/oro_configuration/src/main/resources/com/cross_ni/cross/data/"
   },
 
   "actions": {
@@ -17,11 +19,23 @@
       },
       {
         "run": true,
-        "path": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/Units.xml"
+        "path": "10_Units.xml"
       },
       {
         "run": true,
-        "path":"/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Configuration/AquaCommsConfig.xml"
+        "path": "20_CommonConfig.xml"
+      },
+      {
+        "run": true,
+        "path": "30_ObjectelConfig.xml"
+      },
+      {
+        "run": true,
+        "path": "40_PniConfig.xml"
+      },
+      {
+        "run": true,
+        "path": "60_SecurityConfig.xml"
       }
     ],
     "createProject": true,
@@ -29,39 +43,54 @@
       {
         "run": true,
         "probeName": "countries",
-        "probeXML": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/CountriesDataUP.xml"
+        "probeXML": "countries_up.xml"
       },
       {
         "run": true,
-        "probeName": "materials",
-        "probeXML": "/Users/robert/CROSS/v4_projects/aquacomms/repo/cross_db_tool/Data/MaterialsDataUP.xml"
+        "probeName": "enum_items",
+        "probeXML": "service_product_mapping_enum_data.xml"
       }
     ],
     "probes": [
       {
-        "run": true,
+        "run": false,
+        "probeName" : "materials_probe",
+        "jarPath": "/oro_probes/materials_probe"
+      },
+      {
+        "run": false,
         "probeName" : "locality_probe",
-        "jarPath": "/aquacomms_probes/locality_probe"
+        "jarPath": "/oro_probes/locality_probe"
       },
       {
-        "run": true,
-        "probeName" : "routes_probe",
-        "jarPath": "/aquacomms_probes/routes_probe"
+        "run": false,
+        "probeName" : "sites_probe",
+        "jarPath": "/oro_probes/sites_probe"
       },
       {
-        "run": true,
-        "probeName" : "ciena_probe",
-        "jarPath": "/aquacomms_probes/ciena_probe"
+        "run": false,
+        "probeName" : "racks_probe",
+        "jarPath": "/oro_probes/racks_probe"
       },
       {
-        "run": true,
-        "probeName" : "odf_probe",
-        "jarPath": "/aquacomms_probes/odf_probe"
+        "run": false,
+        "probeName" : "shelves_probe",
+        "jarPath": "/oro_probes/shelves_probe"
       },
       {
-        "run": true,
-        "probeName" : "services_probe",
-        "jarPath": "/aquacomms_probes/services_probe"
+        "run": false,
+        "probeName" : "slots_probe",
+        "jarPath": "/oro_probes/slots_probe"
+      },
+      {
+        "run": false,
+        "probeName" : "cards_probe",
+        "jarPath": "/oro_probes/cards_probe"
+      },
+      {
+        "run": false,
+        "probeName" : "ports_probe",
+        "jarPath": "/oro_probes/ports_probe"
       }
     ]
   }

@@ -20,6 +20,8 @@ type Paths struct {
 	DBToolPath         string `mapstructure:"DBToolPath"`
 	PropertiesFilePath string `mapstructure:"propertiesFilePath"`
 	LogsPath           string `mapstructure:"logsPath"`
+	ConfigsPath        string `mapstructure:"configsPath"`
+	DataPath           string `mapstructure:"dataPath"`
 }
 
 type Probe struct {
@@ -121,7 +123,7 @@ func (c CROSSConfig) importConfigCommands() {
 		if strings.Split(cmd.Path, "")[0] != "-" {
 			commands = append(commands, "-f")
 		}
-		commands = append(commands, cmd.Path)
+		commands = append(commands, c.Paths.ConfigsPath+cmd.Path)
 
 		color.HiMagenta("Running command: " + strings.Join(commands, " "))
 		err := c.executeCommand("java", commands, "")
@@ -167,7 +169,7 @@ func (c CROSSConfig) importData() {
 		commands = append(commands, "importData")
 		commands = append(commands, "--project-name="+ProjectName)
 		commands = append(commands, "-n="+id.ProbeName)
-		commands = append(commands, "-f="+id.ProbeXML)
+		commands = append(commands, "-f="+c.Paths.DataPath+id.ProbeXML)
 
 		color.HiMagenta("Running command: " + strings.Join(commands, " "))
 		err := c.executeCommand("java", commands, "")
