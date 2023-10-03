@@ -1,12 +1,12 @@
 {
   "printExecution": true,
   "paths" : {
-    "repo": "/Users/robert/cross/v4_projects/orange/repo",
+    "repo": "/Users/robert/cross/v4_projects/orange/5g_consolidation_poc",
     "DBToolPath" : "/Users/robert/cross/db_tool-4.11.0",
     "propertiesFilePath" : "/oro_configuration/src/main/resources/com/cross_ni/cross/configuration/override.properties",
     "logsPath": "/Users/robert/cross/v4_projects/orange/",
-    "configsPath" : "/Users/robert/cross/v4_projects/orange/repo/oro_configuration/src/main/resources/com/cross_ni/cross/configuration/",
-    "dataPath": "/Users/robert/cross/v4_projects/orange/repo/oro_configuration/src/main/resources/com/cross_ni/cross/data/"
+    "configsPath" : "/Users/robert/cross/v4_projects/orange/5g_consolidation_poc/oro_configuration/src/main/resources/com/cross_ni/cross/configuration/",
+    "dataPath": "/Users/robert/cross/v4_projects/orange/5g_consolidation_poc/oro_configuration/src/main/resources/com/cross_ni/cross/data/"
   },
 
   "actions": {
@@ -23,14 +23,14 @@
       },
       {
         "run": true,
-        "path": "20_CommonConfig.xml"
+        "path": "oro_config_5g_consolidation.xml"
       },
       {
-        "run": true,
+        "run": false,
         "path": "30_ObjectelConfig.xml"
       },
       {
-        "run": true,
+        "run": false,
         "path": "40_PniConfig.xml"
       },
       {

@@ -122,8 +122,10 @@ func (c CROSSConfig) importConfigCommands() {
 		commands = append(commands, "importConfig")
 		if strings.Split(cmd.Path, "")[0] != "-" {
 			commands = append(commands, "-f")
+			commands = append(commands, c.Paths.ConfigsPath+cmd.Path)
+		} else {
+			commands = append(commands, cmd.Path)
 		}
-		commands = append(commands, c.Paths.ConfigsPath+cmd.Path)
 
 		color.HiMagenta("Running command: " + strings.Join(commands, " "))
 		err := c.executeCommand("java", commands, "")
