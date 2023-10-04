@@ -289,7 +289,7 @@ func (c CROSSConfig) executeCommand(command string, args []string, filename stri
 }
 
 func defaultDBToolCommand(c CROSSConfig, appendProperties bool) []string {
-	vec := strings.Split(c.Paths.DBToolPath, "/")
+	vec := strings.Split(c.Paths.DBToolPath, string(os.PathSeparator))
 	dbToolName := vec[len(vec)-1]
 
 	cmds := []string{
