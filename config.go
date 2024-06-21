@@ -42,12 +42,14 @@ type ImportConfig struct {
 }
 
 type Actions struct {
-	CreateDB      bool           `mapstructure:"createDB"`
-	Initialize    bool           `mapstructure:"initialize"`
-	ImportConfigs []ImportConfig `mapstructure:"importConfigs"`
-	CreateProject bool           `mapstructure:"createProject"`
-	ImportData    []ImportData   `mapstructure:"importData"`
-	Probes        []Probe        `mapstructure:"probes"`
+	CreateDB           bool           `mapstructure:"createDB"`
+	Initialize         bool           `mapstructure:"initialize"`
+	ImportCoreConfig   bool           `mapstructure:"importCoreConfig"`
+	ImportProjectTypes ImportConfig   `mapstructure:"importProjectTypes"`
+	CreateProject      bool           `mapstructure:"createProject"`
+	ImportConfigs      []ImportConfig `mapstructure:"importConfigs"`
+	ImportData         []ImportData   `mapstructure:"importData"`
+	Probes             []Probe        `mapstructure:"probes"`
 }
 
 type CROSSConfig struct {
@@ -60,8 +62,10 @@ func (c CROSSConfig) RunActions() {
 	c.goToDBToolPath()
 	c.createDB()
 	c.initialize()
-	c.importConfigCommands()
+	c.importCoreConfig()
+	c.importProjectTypesCommand()
 	c.createProject()
+	c.importConfigCommands()
 	c.importData()
 	c.runProbes()
 }
@@ -102,6 +106,44 @@ func (c CROSSConfig) initialize() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (c CROSSConfig) importCoreConfig() {
+	if !c.Actions.ImportCoreConfig {
+		return
+	}
+	commands := defaultDBToolCommand(c, true)
+	commands = append(commands, "importConfig")
+	commands = append(commands, "--import-core-conf")
+	color.HiMagenta("Running command: " + strings.Join(commands, " "))
+	err := c.executeCommand("java", commands, "")
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (c CROSSConfig) importProjectTypesCommand() {
+	importConfig := c.Actions.ImportProjectTypes
+
+	commands := defaultDBToolCommand(c, true)
+
+	if !importConfig.Run {
+		return
+	}
+	commands = append(commands, "importConfig")
+	if strings.Split(importConfig.Path, "")[0] != "-" {
+		commands = append(commands, "-f")
+		commands = append(commands, c.Paths.ConfigsPath+importConfig.Path)
+	} else {
+		commands = append(commands, importConfig.Path)
+	}
+
+	color.HiMagenta("Running command: " + strings.Join(commands, " "))
+	err := c.executeCommand("java", commands, "")
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func (c CROSSConfig) importConfigCommands() {
