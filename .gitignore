@@ -20,3 +20,6 @@
 /.idea/.gitignore
 /.idea/cross-devOps.iml
 /.idea/vcs.xml
+.DS_Store
+
+/bin
