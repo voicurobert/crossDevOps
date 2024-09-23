@@ -271,6 +271,10 @@ func (c CROSSConfig) getProbeJarPath(probeName, path string) string {
 	return repo + path + "/target/" + probeName + ".jar"
 }
 
+// executeCommand runs a command and logs its output to a file and to stdout (if PrintExecution is true).
+// If filename is not empty, the output is logged to a file in the LogsPath directory.
+// If PrintExecution is true, the command's output is also printed to stdout.
+// The function returns an error if the command fails.
 func (c CROSSConfig) executeCommand(command string, args []string, filename string) error {
 	cmd := exec.Command(command, args...)
 
@@ -330,6 +334,9 @@ func (c CROSSConfig) executeCommand(command string, args []string, filename stri
 	return nil
 }
 
+// defaultDBToolCommand returns a string slice with the default arguments for the DBTool application.
+// The returned slice will contain the -jar argument with the path to the DBTool jar file.
+// If appendProperties is true, the -p argument will be appended with the path to the properties file.
 func defaultDBToolCommand(c CROSSConfig, appendProperties bool) []string {
 	vec := strings.Split(c.Paths.DBToolPath, string(os.PathSeparator))
 	dbToolName := vec[len(vec)-1]
